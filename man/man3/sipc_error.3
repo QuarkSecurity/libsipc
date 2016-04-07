@@ -1,0 +1,22 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_ERROR" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_error \- Print messages for errors that occur during secure IPC
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+void\ \fBsipc_error\fR(sipc_t\ \fI*sipc\fR, char\ \fI*format\fR, ...);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_error\fR is used for reporting errors that occur during secure IPC.
+This function recognizes \fBprintf(3)\fR style format strings.
+.SH "RETURN VALUE"
+This function has no return value.
+.SH "SEE ALSO"
+\fBsipc_open(3)\fR, \fBsipc_close(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

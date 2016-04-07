@@ -1,0 +1,38 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_UNLINK" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_unlink \- Destroy an IPC resource from the system
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+void\ \fBsipc_unlink\fR(char\ \fI*key\fR, int\ \fIipc_type\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_unlink\fR() frees IPC resources created via \fBsipc_open\fR()
+when the SIPC_CREATE flag is specified.
+This function should only be called by a destroyer process, not by the
+processes actually communicating via secure IPC.
+Note that even after a call to \fBsipc_unlink\fR(), the IPC resource will
+continue to exist until all active connections (i.e., senders and receivers)
+have called \fBsipc_close\fR().
+For this reason, all processes using the IPC resource should call
+\fBsipc_close\fR() before the destroyer process calls \fBsipc_unlink\fR().
+.PP
+The function parameters are as follows:
+.TP
+.I key
+A string which will serve as the identifier for the IPC resource.
+.TP
+.I ipc_type
+One of SIPC_SYSV_MQUEUES or SIPC_SYSV_SHM for message queues
+or shared memory, respectively.
+.SH "RETURN VALUE"
+This function has no return value.
+.SH "SEE ALSO"
+\fBsipc_open(3)\fR, \fBsipc_close(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

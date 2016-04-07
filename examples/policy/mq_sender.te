@@ -1,0 +1,28 @@
+policy_module(mq_sender, 1.0)
+
+# This is an example policy to support the mq_sender
+# it makes the assumption - perhaps falsely -  that
+# libraries was installed without specifying DESTDIR.  
+# that is directly on the system in /usr/lib
+
+# declare the required types
+type mq_sender_t;
+domain_base_type(mq_sender_t)
+
+type mq_sender_exec_t;
+domain_entry_file(mq_sender_t,mq_sender_exec_t)
+
+role system_r types mq_sender_t;
+
+# general process terms (not related to message queues)
+term_use_generic_ptys(mq_sender_t)
+files_search_etc(mq_sender_t)
+libs_use_ld_so(mq_sender_t)
+libs_use_shared_libs(mq_sender_t)
+
+# we are making the assumption you run this from your home directory
+userdom_read_unpriv_users_home_content_files(mq_sender_t)
+
+mq_creator_send_msgs(mq_sender_t)
+
+unconfined_domtrans_to(mq_sender_t, mq_sender_exec_t)

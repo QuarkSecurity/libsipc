@@ -1,0 +1,14 @@
+INSTALLATION
+============
+
+This directory contains Java bindings to libsipc and example
+applications using these bindings.  There is also C source code that
+is eventually compiled into a shared library.
+
+To install the bindings, a few settings may need to be adjusted.  The
+Makefile in this directory may need to be modified so that the build
+process can locate the system's JNI include files.
+
+Note that the directory into which the shared library is installed
+must be in the dynamic linker's search path.
+

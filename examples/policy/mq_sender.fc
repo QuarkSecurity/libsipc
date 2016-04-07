@@ -1,0 +1,5 @@
+# update location to reflect location of your examples
+# ie /home/username/examples/mq_sender
+/home/username/examples/mq_sender -- gen_context(system_u:object_r:mq_sender_exec_t,s0)
+
+

@@ -1,0 +1,29 @@
+These are the sample policy files to support the secure IPC examples.  While
+the examples could be run on a targeted system without these modules the
+modules illustrate the permissions required to support applications using
+the secure IPC library.
+
+To function properly the example applications must reside within a user's home
+directory and the sipc libraries must be installed into the system root, ie
+/usr/lib, do not use DESTDIR when building.  Certain portions of the files will 
+need to be changed before the policy will be functional.  Specifically the 
+location of the example application.  Modify each ".fc" to reflect your
+environment.
+
+To build and install the policy run:
+
+# make install-policy
+
+as root.  This does three things: makes a backup of a file that must be updated
+before building the policy modules, builds the policy modules, installs the 
+policy modules, and labels the examples.  Now the example applications can be 
+tested with SELinux policy modules.
+
+After completing the tests the installation process can easily be reverted by
+running:
+
+# make clean
+
+as root.  This replaces the updated file with the original, removes the 
+policy modules, and relabels the examples.   
+

@@ -1,0 +1,47 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_OPEN" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_open \- Allocate and initialize a secure IPC handle
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+sipc_t\ *\fBsipc_open\fR(char\ \fI*key\fR, int\ \fImode\fR, int\ \fIipc_type\fR, size_t\ \fIsize\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+The \fBsipc_open\fR() function allocates and initializes an IPC handle,
+allowing it to be used in secure communications.
+A call to \fBsipc_open\fR() must be made before calling any of the other
+SIPC functions.
+The returned IPC handle should be deallocated via a call to
+\fBsipc_close\fR() when it is no longer needed.
+.PP
+The function parameters are as follows:
+.TP
+.I key
+A string which serves as an identifier for this IPC resource.
+.TP
+.I mode
+One of SIPC_CREATOR, SIPC_SENDER or SIPC_RECEIVER, depending on
+the role that the invoking process is performing.
+The SIPC_CREATOR mode, which causes the actual IPC resource to be created,
+should only be used by helper applications not actually participating in
+the communications process.
+The \fBsipc_unlink\fR() function should be called by a helper
+application to remove the underlying IPC resource.
+.TP
+.I ipc_type
+The type of IPC to be used for communications, one of SIPC_SYSV_MQUEUES
+or SIPC_SYSV_SHM.
+.TP
+.I size
+Size, in bytes, to allocate for the IPC handle's data member.
+.SH "RETURN VALUE"
+This function returns a pointer to the new IPC handle on success, NULL on error.
+.SH "SEE ALSO"
+\fBsipc_close(3)\fR, \fBsipc_unlink(3)\fR, \fBsipc_ioctl(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

@@ -1,0 +1,44 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_SEND_DATA" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_send_data \- Send data to a secure IPC channel
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+int\ \fBsipc_send_data\fR(sipc_t\ \fI*sipc\fR, int\ \fImsg_len\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_send_data\fR sends \fImsg_len\fR bytes of data contained in an IPC
+handle across a secure channel. Depending on the size of \fImsg_len\fR and
+the underlying IPC mechanism used, fragmentation of the data may occur
+during transmission. Reassembly of fragmented data occurs transparently
+at the receiver's end, with a call to \fBsipc_recv_data\fR().
+.PP
+In the case of shared memory, the caller must ensure that the size of
+the data contained in the handle does not exceed the system shared
+memory segment size limit, in which case the data will be truncated
+prior to transmission. Furthermore, this function will block until the
+message is consumed by the reader (via \fBsipc_recv_data\fR() and
+\fBsipc_shm_recv_done\fR()). For channels created as message queues, no
+such blocking occurs.
+.SH "RETURN VALUE"
+This function returns 0 on success.  On error, \-1 is returned and
+\fIerrno\fR is set appropriately.
+.SH "EXAMPLES"
+.nf
+/* Sample code */
+
+char msg[] = "Hello, world.";
+char *data = sipc_get_data_ptr(ipc); /* Get data pointer from handle */
+strncpy(data, msg, size);            /* Copy mesasge into the handle */
+if (sipc_send_data(ipc, size) < 0)   /* Send the message */
+	sipc_error(ipc, "Unable to send data.");
+.fi
+.SH "SEE ALSO"
+\fBsipc_get_data_ptr(3)\fR, \fBsipc_recv_data(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

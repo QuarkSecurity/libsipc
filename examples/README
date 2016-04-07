@@ -1,0 +1,75 @@
+This is a brief description of how to use libsipc for secure, one-way communications between one reader and one writer process.  
+
+Creating an IPC Resource
+========================
+Libsipc was designed with the intention of minimizing backchannels
+between reader and writer processes. Therefore, creation and destruction
+of IPC resources must be controlled by applications outside of the
+communicating processes.  The shm_creator and mq_creator targets in this
+directory are examples of such helper applications; they simply call
+sipc_open(3) with the SIPC_CREATOR flag.  Likewise, the shm_destroyer
+and mq_destroyer targets in this directory are also helper applications;
+they call sipc_unlink(3).
+
+Connecting
+==========
+Connecting a process to an IPC resource created through libsipc involves
+calling sipc_open(3) with the SIPC_SENDER or SIPC_RECEIVER flag.  This
+function will return an IPC handle, which contains an internal buffer
+and state information relevant to the communications process. When the
+SIPC_SENDER or SIPC_RECEIVER flag is specified, a call to sipc_open(3)
+will allocate the IPC handle's data member and connect the handle to
+the IPC resource:
+
+	ipc = sipc_open("ipc_key", role, ipc_type, size);	
+
+where "role" is either SIPC_SENDER or SIPC_RECEIVER.  Note the distinction
+between an IPC handle and an IPC resource: an IPC handle has an underlying
+IPC mechanism, such as message queues or shared memory, as specified by
+the ipc_type parameter to sipc_open(3).  This underlying mechanism and its
+associated system resources shall be known as an "IPC resource." Processes
+communicating using libsipc do not directly access IPC resources, rather
+they operate entirely on IPC handles.
+
+Sending Data
+============
+To send data to a connected IPC handle, the data must first be copied
+into the handle's internal data member.  To do this, a pointer to the
+handle's internal data member can be obtained via sipc_get_data_ptr(3):
+
+	char my_data[] = "Hello, world.";
+	data = sipc_get_data_ptr(ipc);
+	strncpy(data, my_data, size);
+	sipc_send_data(ipc);
+
+Receiving Data
+==============
+To receive data from a connected IPC handle, you must call
+sipc_recv_data(3), passing it a buffer for data storage:
+
+	char *data = sipc_get_data_ptr(ipc);
+	sipc_recv_data(ipc, &data, &len);
+	printf("Received %s\n", data);
+	sipc_shm_recv_done(ipc);  /* Only needed when using shm */
+
+When using shared memory, a call to sipc_shm_recv_done(3) is needed to
+unblock the sending process, allowing it to send more data.
+
+Cleaning Up
+===========
+Closing an IPC handle from an IPC resource can be done with sipc_close(3).
+To eliminate backchannels between sending and receiving processes,
+freeing IPC resources acquired during the communications process
+should be done in a separate process (see "Creating an IPC Resource").
+This destroyer process should call sipc_unlink(3) to free IPC resources.
+Note that the destroyer process should be run only when all communicating
+processes have closed their respective IPC handles.
+
+Handling Errors
+===============
+When using libsipc, various errors may occur in the communication process.
+The sipc_error(3) function has been provided to handle the displaying
+of error messages when such conditions arise:
+
+	if (sipc_send_data(ipc) < 0) 
+		sipc_error(ipc, "Error sending data\n");	

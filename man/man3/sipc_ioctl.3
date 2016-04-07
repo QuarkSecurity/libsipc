@@ -1,0 +1,40 @@
+.\" Copyright (C) 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_IOCTL" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_ioctl \- Set SIPC channel parameters
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+int\ \fBsipc_ioctl\fR(sipc_t\ \fI*sipc\fR, int\ \fIrequest\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_ioctl\fR() modifies the behavior of a secure IPC channel.
+.PP
+The function parameters are as follows:
+.TP
+.I sipc
+An IPC handle
+.TP
+.I request
+New behavior for the IPC channel
+.PP
+The IPC channel's behavior may be adjusted by setting \fIrequest\fR to
+one of:
+.TP
+.B SIPC_BLOCK
+Set the channel to block when reading.  This flag does not affect the
+behavior for writing, and is the default behavior for reading.
+.TP
+.B SIPC_NONBLOCK
+Set the channel to not block when reading.  This flag does not affect
+the behavior for writing.
+.SH "RETURN VALUE"
+This function returns 0 on success, \-1 on error.
+.SH "SEE ALSO"
+\fBsipc_open(3)\fR
+.SH AUTHOR
+Jason Tang <jtang@tresys.com>

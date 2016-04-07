@@ -1,0 +1,81 @@
+## <summary>mq_creator example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to mq_creator.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`mq_creator_domtrans',`
+        gen_require(`
+                type mq_creator_t, mq_creator_exec_t;
+        ')
+
+        domain_auto_trans($1,mq_creator_exec_t,mq_creator_t)
+
+        allow $1 mq_creator_t:fd use;
+        allow mq_creator_t $1:fd use;
+        allow $1 mq_creator_t:fifo_file rw_file_perms;
+        allow $1 mq_creator_t:process sigchld;
+')
+
+########################################
+## <summary>
+##      Destroy mq_creators queue
+## </summary>
+## <param name="domain">
+##      Type of domain allowed to destroy mq_creators queue.
+## </param>
+#
+interface(`mq_creator_destroy_mq', `
+	gen_require(`
+		type mq_creator_t;
+	')
+	
+	allow $1 mq_creator_t:msgq { destroy associate };
+')
+
+########################################
+## <summary>
+##     Allow a domain to send messages to/through the mq_creator domain
+## </summary>
+## <param name="domain">
+##      Type of domain which can send messages to mq_creator.
+##      That is, mq_creator can receive messages from this domain.
+## </param>
+#
+interface(`mq_creator_send_msgs', `
+	gen_require(`
+		type mq_creator_t;
+	')
+	
+	allow $1 mq_creator_t:msg send;
+	allow $1 mq_creator_t:msgq { associate unix_write write };
+	kernel_read_fs_sysctls($1)
+')
+
+########################################
+## <summary>
+##      Allow a domain to receive messages from/through the mq_creator domain
+## </summary>
+## <param name="domain">
+##      Type of domain which can receive messages from mq_creator.
+##      That is, mq_creator can send messages to this domain.
+## </param>
+#
+interface(`mq_creator_recv_msgs', `
+	gen_require(`
+		type mq_creator_t;
+	')
+
+	allow $1 mq_creator_t:msg receive;
+	allow $1 mq_creator_t:msgq { associate read unix_read };
+	# to query max msg size
+	kernel_read_fs_sysctls($1)
+')

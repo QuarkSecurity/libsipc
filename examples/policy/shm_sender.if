@@ -1,0 +1,62 @@
+## <summary>shm_sender example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to shm_sender.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`shm_sender_domtrans',`
+        gen_require(`
+                type shm_sender_t, shm_sender_exec_t;
+        ')
+
+        domain_auto_trans($1,shm_sender_exec_t,shm_sender_t)
+
+        allow $1 shm_sender_t:fd use;
+        allow shm_sender_t $1:fd use;
+        allow $1 shm_sender_t:fifo_file rw_file_perms;
+        allow $1 shm_sender_t:process sigchld;
+')
+
+########################################
+## <summary>
+##      Destroy shm_senders shm
+## </summary>
+## <param name="domain">
+##      Type of domain allowed to destroy shm_senders shm.
+## </param>
+#
+interface(`shm_sender_destroy_shm', `
+        gen_require(`
+                type shm_sender_t;
+        ')
+
+        allow $1 shm_sender_t:shm { destroy associate };
+')
+
+########################################
+## <summary>
+##      Destroy shm_senders shm
+## </summary>
+## <param name="domain">
+##      Type of domain allowed to read the shared memory
+## </param>
+#
+interface(`shm_sender_read_shm', `
+        gen_require(`
+                type shm_sender_t, shm_sender_tmpfs_t;
+        ')
+
+	allow $1 shm_sender_tmpfs_t:file read;
+	allow $1 shm_sender_t:fd use;
+	allow $1 shm_sender_t:shm { associate read unix_read };
+	allow $1 shm_sender_tmpfs_t:file read;
+
+')

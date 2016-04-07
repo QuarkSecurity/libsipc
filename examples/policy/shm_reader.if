@@ -1,0 +1,28 @@
+## <summary>shm_reader example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to shm_reader.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`shm_reader_domtrans',`
+        gen_require(`
+                type shm_reader_t, shm_reader_exec_t;
+        ')
+
+        domain_auto_trans($1,shm_reader_exec_t,shm_reader_t)
+
+        allow $1 shm_reader_t:fd use;
+        allow shm_reader_t $1:fd use;
+        allow $1 shm_reader_t:fifo_file rw_file_perms;
+        allow $1 shm_reader_t:process sigchld;
+')
+
+

@@ -1,0 +1,37 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_SHM_RECV_DONE" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_shm_recv_done \- Finish reading a message in shared memory
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+int\ \fBsipc_shm_recv_done\fR(sipc_t\ \fI*sipc\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_shm_recv_done\fR() is called by an application receiving
+messages using shared memory during secure IPC.
+\fBsipc_shm_recv_done\fR() unblocks the sending process, allowing it
+to resume processing.
+This function needs to be called when using shared memory as a backend
+for secure IPC.
+.SH "RETURN VALUE"
+This function returns 0 on success, \-1 on error.
+.SH "EXAMPLES"
+.nf
+/* Sample code */
+
+char *data;
+int len;
+sipc_recv_data(ipc, &data, &len);
+printf("Received %s", data);   /* Do stuff with shared memory */
+sipc_shm_recv_done(ipc);       /* Unblock sender when done; this is only
+                                  needed when using shared memory */
+.fi
+.SH "SEE ALSO"
+\fBsipc_send_data(3)\fR, \fBsipc_recv_data(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

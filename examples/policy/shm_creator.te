@@ -1,0 +1,30 @@
+policy_module(shm_creator, 1.0)
+
+# This is an example policy to support the shm_creator
+# it makes the assumption - perhaps falsely -  that
+# libraries was installed without specifying DESTDIR.  
+# that is directly on the system in /usr/lib
+
+# declare the required types
+type shm_creator_t;
+domain_base_type(shm_creator_t)
+
+type shm_creator_exec_t;
+domain_entry_file(shm_creator_t,shm_creator_exec_t)
+
+role system_r types shm_creator_t;
+
+# general process terms (not related to message queues)
+term_use_generic_ptys(shm_creator_t)
+files_search_etc(shm_creator_t)
+libs_use_ld_so(shm_creator_t)
+libs_use_shared_libs(shm_creator_t)
+
+# we are making the assumption you run this from your home directory
+userdom_read_unpriv_users_home_content_files(shm_creator_t)
+
+
+# shm_creator only needs a single message queue related permission
+allow shm_creator_t self:msgq  { create enqueue };
+
+unconfined_domtrans_to(shm_creator_t, shm_creator_exec_t)

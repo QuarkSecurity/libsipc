@@ -1,0 +1,29 @@
+policy_module(mq_destroyer, 1.0)
+
+# This is an example policy to support the mq_destroyer
+# it makes the assumption - perhaps falsely -  that
+# libraries was installed without specifying DESTDIR.  
+# that is directly on the system in /usr/lib
+
+# declare the required types
+type mq_destroyer_t;
+domain_base_type(mq_destroyer_t)
+
+type mq_destroyer_exec_t;
+domain_entry_file(mq_destroyer_t,mq_destroyer_exec_t)
+
+role system_r types mq_destroyer_t;
+
+# general process terms (not related to message queues)
+term_use_generic_ptys(mq_destroyer_t)
+files_search_etc(mq_destroyer_t)
+libs_use_ld_so(mq_destroyer_t)
+libs_use_shared_libs(mq_destroyer_t)
+
+# we are making the assumption you run this from your home directory
+userdom_read_unpriv_users_home_content_files(mq_destroyer_t)
+
+# mq_destroyer destroys mq_creators queue
+mq_creator_destroy_mq(mq_destroyer_t)
+
+unconfined_domtrans_to(mq_destroyer_t, mq_destroyer_exec_t)

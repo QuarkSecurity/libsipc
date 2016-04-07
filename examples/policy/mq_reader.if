@@ -1,0 +1,28 @@
+## <summary>mq_reader example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to mq_reader.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`mq_reader_domtrans',`
+        gen_require(`
+                type mq_reader_t, mq_reader_exec_t;
+        ')
+
+        domain_auto_trans($1,mq_reader_exec_t,mq_reader_t)
+
+        allow $1 mq_reader_t:fd use;
+        allow mq_reader_t $1:fd use;
+        allow $1 mq_reader_t:fifo_file rw_file_perms;
+        allow $1 mq_reader_t:process sigchld;
+')
+
+

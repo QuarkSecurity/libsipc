@@ -1,0 +1,17 @@
+VERS_1.0{
+  global:
+	sipc_open;
+	sipc_close;
+	sipc_unlink;
+	sipc_send_data;
+	sipc_recv_data;
+	sipc_get_data_ptr;
+	sipc_shm_recv_done;
+	sipc_error;
+  local: *;
+};
+
+VERS_1.2{
+  global:
+	sipc_ioctl;
+};

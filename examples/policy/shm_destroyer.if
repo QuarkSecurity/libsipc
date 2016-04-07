@@ -1,0 +1,27 @@
+## <summary>shm_destroyer example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to shm_destroyer.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`shm_destroyer_domtrans',`
+        gen_require(`
+                type shm_destroyer_t, shm_destroyer_exec_t;
+        ')
+
+        domain_auto_trans($1,shm_destroyer_exec_t,shm_destroyer_t)
+
+        allow $1 shm_destroyer_t:fd use;
+        allow shm_destroyer_t $1:fd use;
+        allow $1 shm_destroyer_t:fifo_file rw_file_perms;
+        allow $1 shm_destroyer_t:process sigchld;
+')
+

@@ -1,0 +1,81 @@
+## <summary>shm_creator example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to shm_creator.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`shm_creator_domtrans',`
+        gen_require(`
+                type shm_creator_t, shm_creator_exec_t;
+        ')
+
+        domain_auto_trans($1,shm_creator_exec_t,shm_creator_t)
+
+        allow $1 shm_creator_t:fd use;
+        allow shm_creator_t $1:fd use;
+        allow $1 shm_creator_t:fifo_file rw_file_perms;
+        allow $1 shm_creator_t:process sigchld;
+')
+
+########################################
+## <summary>
+##      Destroy shm_creators queue
+## </summary>
+## <param name="domain">
+##      Type of domain allowed to destroy shm_creators queue.
+## </param>
+#
+interface(`shm_creator_destroy_mq', `
+	gen_require(`
+		type shm_creator_t;
+	')
+	
+	allow $1 shm_creator_t:msgq { destroy associate };
+')
+
+########################################
+## <summary>
+##      Allow a domain to send messages to shm_creator
+## </summary>
+## <param name="domain">
+##      Type of domain which can send messages to shm_creator.
+##      That is, shm_creator can receive messages from this domain.
+## </param>
+#
+interface(`shm_creator_send_msgs', `
+	gen_require(`
+		type shm_creator_t;
+	')
+	
+	allow $1 shm_creator_t:msg send;
+	allow $1 shm_creator_t:msgq { associate unix_write write getattr setattr unix_read };
+	kernel_read_fs_sysctls($1)
+')
+
+########################################
+## <summary>
+##      Allow a domain to receive messages from shm_creator
+## </summary>
+## <param name="domain">
+##      Type of domain which can receive messages from shm_creator.
+##      That is, shm_creator can send messages to this domain.
+## </param>
+#
+interface(`shm_creator_recv_msgs', `
+	gen_require(`
+		type shm_creator_t;
+	')
+
+	allow $1 shm_creator_t:msg receive;
+	allow $1 shm_creator_t:msgq { associate read unix_read };
+	# to query max msg size
+	kernel_read_fs_sysctls($1)
+')

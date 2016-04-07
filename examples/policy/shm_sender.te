@@ -1,0 +1,40 @@
+policy_module(shm_sender, 1.0)
+
+# This is an example policy to support the shm_sender
+# it makes the assumption - perhaps falsely -  that
+# libraries was installed without specifying DESTDIR.  
+# that is directly on the system in /usr/lib
+
+# declare the required types
+type shm_sender_t;
+domain_base_type(shm_sender_t)
+
+type shm_sender_exec_t;
+domain_entry_file(shm_sender_t,shm_sender_exec_t)
+
+type shm_sender_tmpfs_t;
+files_tmpfs_file(shm_sender_tmpfs_t)
+
+role system_r types shm_sender_t;
+
+# general process terms (not related to message queues)
+term_use_generic_ptys(shm_sender_t)
+files_search_etc(shm_sender_t)
+libs_use_ld_so(shm_sender_t)
+libs_use_shared_libs(shm_sender_t)
+
+# we are making the assumption you run this from your home directory
+userdom_read_unpriv_users_home_content_files(shm_sender_t)
+
+shm_creator_send_msgs(shm_sender_t)
+
+# NOTE: the sender requires read/write since there is no concept of write only
+# shared memory in Linux.  This is not significant from a security perspective
+# since the reader is restricted to read only.  This means no back channel is 
+# created just by given the sender read/write.
+allow shm_sender_t shm_sender_tmpfs_t:file { read write };
+allow shm_sender_t self:shm { create read unix_read unix_write write };
+
+fs_tmpfs_filetrans(shm_sender_t, shm_sender_tmpfs_t, file)
+
+unconfined_domtrans_to(shm_sender_t, shm_sender_exec_t)

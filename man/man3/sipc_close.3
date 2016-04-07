@@ -1,0 +1,30 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_CLOSE" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_close \- Free resources associated with a secure IPC handle
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+void\ \fBsipc_close\fR(sipc_t\ \fI*sipc\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_close\fR() frees memory associated with a secure IPC handle
+that was obtained via \fBsipc_open\fR() and detaches from the
+associated IPC resource.
+Nothing occurs if
+.IR sipc
+is NULL.
+Undefined behavior occurs if the same handle is closed multiple times.
+.P
+Note that \fBsipc_close\fR() does not destroy the underlying IPC resource;
+that is done by \fBsipc_unlink\fR().
+.SH "RETURN VALUE"
+This function has no return value.
+.SH "SEE ALSO"
+\fBsipc_open(3)\fR, \fBsipc_unlink(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

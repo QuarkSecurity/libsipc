@@ -1,0 +1,27 @@
+## <summary>mq_destroyer example policy</summary>
+## <desc>
+## something
+## </desc>
+#
+
+########################################
+## <summary>
+##      Transition from source domain to mq_destroyer.
+## </summary>
+## <param name="domain">
+##      Domain allowed to transition.
+## </param>
+#
+interface(`mq_destroyer_domtrans',`
+        gen_require(`
+                type mq_destroyer_t, mq_destroyer_exec_t;
+        ')
+
+        domain_auto_trans($1,mq_destroyer_exec_t,mq_destroyer_t)
+
+        allow $1 mq_destroyer_t:fd use;
+        allow mq_destroyer_t $1:fd use;
+        allow $1 mq_destroyer_t:fifo_file rw_file_perms;
+        allow $1 mq_destroyer_t:process sigchld;
+')
+

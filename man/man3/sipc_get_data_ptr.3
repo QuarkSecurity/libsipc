@@ -1,0 +1,37 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_GET_DATA_PTR" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_get_data_ptr \- Get a pointer to a secure IPC handle's sending data buffer
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+char\ *\fBsipc_get_data_ptr\fR(sipc_t\ \fI*sipc\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_get_data_ptr\fR() is used to access the data associated with an
+IPC handle.
+The contents of the pointed to memory will be sent upon a call to
+\fBsipc_send_data\fR().
+.P
+Do not \fBfree\fR() or otherwise deallocate the returned pointer.
+.SH "RETURN VALUE"
+This function returns a pointer to the handle's data member on success,
+NULL on error.
+.SH "EXAMPLES"
+.nf
+/* Sample code */
+
+char msg[] = "Hello, world.";
+data = sipc_get_data_ptr(ipc);       /* Get data pointer from handle */
+strncpy(data, msg, size);            /* Copy message into the handle */
+if (sipc_send_data(ipc, size) < 0)   /* Send the message */
+	sipc_error(ipc, "Unable to send data.");
+.fi
+.SH "SEE ALSO"
+\fBsipc_send_data(3)\fR, \fBsipc_recv_data(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>

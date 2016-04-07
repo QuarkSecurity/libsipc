@@ -1,0 +1,5 @@
+# update location to reflect location of your examples
+# ie /home/username/examples/shm_creator
+/home/username/examples/shm_creator -- gen_context(system_u:object_r:shm_creator_exec_t,s0)
+
+

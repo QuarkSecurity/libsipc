@@ -1,0 +1,76 @@
+.\" Copyright (C) 2006 - 2008 Tresys Technology, LLC
+.\" This file is distributed according to the GNU Lesser General Public License
+.TH "SIPC_RECV_DATA" 3 "2006-08-10" "Linux 2.6" "Linux Programmer's Manual"
+.SH NAME
+sipc_recv_data \- Receive data from a secure IPC channel
+.SH "SYNOPSIS"
+.ad l
+.hy 0
+#include <sipc/sipc.h>
+.HP 20
+int\ \fBsipc_recv_data\fR(sipc_t\ \fI*sipc\fR, char\ \fI**data\fR, int\ \fI*len\fR);
+.ad
+.hy
+.SH "DESCRIPTION"
+\fBsipc_recv_data\fR() receives data from a secure IPC channel.
+.PP
+The function parameters are as follows:
+.TP
+.I sipc
+An IPC handle
+.TP
+.I data
+Pointer to a buffer which will hold the data received from the channel
+.TP
+.I len
+Pointer to the total number of bytes received (which could be 0).
+.PP
+If the IPC channel is a message queue, \fBsipc_recv_data\fR()
+allocates the buffer used to store received data; it is the
+responsibility of the caller to \fBfree()\fR this data afterwards.
+.P
+Otherwise if the IPC channel is shared memory, the returned
+.I data
+pointer points into the shared memory buffer.
+The reader must call \fBsipc_shm_recv_done\fR() to unblock the sender,
+and
+.I data
+should not be freed.
+After calling \fBsipc_recv_data\fR(), there must be a call to
+\fBsipc_shm_recv_done\fR() prior to further invocations of
+\fBsipc_recv_data\fR(), else undefined behavior results.
+.P
+By default, this function blocks if no data is in the IPC channel.
+This can be changed to non-blocking via \fBsipc_ioctl()\fR.
+.SH "RETURN VALUE"
+This function returns 0 on success.  On error, \-1 is returned,
+.I *data
+will be set to NULL,
+.I msg_len
+will be set to zero, and \fIerrno\fR is set appropriately.
+.SH "ERRORS"
+.TP
+.B EAGAIN
+The channel is set to non-blocking and nothing was available to be
+read.
+.TP
+.B EBADF
+The channel is not open for receiving.
+.TP
+.B EIO
+Message was corrupted during transmission, and is now lost.
+.SH "EXAMPLES"
+.nf
+/* Sample code */
+
+char *data;
+int len;
+sipc_recv_data(ipc, &data, &len);
+printf("Received %s", data);   /* Do stuff with shared memory */
+sipc_shm_recv_done(ipc);       /* Unblock sender when done; this is only
+                                  needed when using shared memory */
+.fi
+.SH "SEE ALSO"
+\fBsipc_send_data(3)\fR, \fBsipc_shm_recv_done(3)\fR, \fBsipc_ioctl(3)\fR
+.SH AUTHOR
+David Windsor <dwindsor@tresys.com>
