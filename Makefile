@@ -1,8 +1,8 @@
 # Installation directories
-PREFIX ?= /usr/local
-INCLUDEDIR ?= $(PREFIX)/include
-LIBDIR ?= $(PREFIX)/lib
-DATAROOTDIR ?= $(PREFIX)/share
+DESTDIR ?= /usr/local
+INCLUDEDIR ?= $(DESTDIR)/include
+LIBDIR ?= $(DESTDIR)/lib
+DATAROOTDIR ?= $(DESTDIR)/share
 MANDIR ?= $(DATAROOTDIR)/man
 
 ifeq ($(DEBUG), 1)
@@ -19,7 +19,7 @@ AM_CFLAGS += -Wall -Wundef -Wmissing-noreturn -D_GNU_SOURCE -fpic
 INCLUDEDIRS := -I$(shell pwd)/include
 LIBDIRS := -L$(shell pwd)/src
 
-export PREFIX INCLUDEDIR LIBDIR DATAROOTDIR MANDIR \
+export DESTDIR INCLUDEDIR LIBDIR DATAROOTDIR MANDIR \
 	AM_CFLAGS LDFLAGS
 
 # This library can optionally build bindings for other langugages.

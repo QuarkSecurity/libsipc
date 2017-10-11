@@ -1,6 +1,9 @@
 SOVERSION=1
 RELEASE=0
 
+DESTDIR ?= /usr/local
+LIBDIR ?= $(DESTDIR)/lib/
+
 TARGET=libsipc.so
 SONAME=$(TARGET).$(SOVERSION)
 LIBSO=$(TARGET).$(SOVERSION)
@@ -22,10 +25,10 @@ $(RELEASESO): $(OBJS)
 	$(CC) $(AM_CFLAGS) $(CFLAGS) $(INCLUDEDIRS) -c -o $@ $<
 
 install: $(RELEASESO)
-	test -d $(DESTDIR)/$(LIBDIR) || install -m 755 -d $(DESTDIR)/$(LIBDIR)
-	install -m 644 $(RELEASESO) $(DESTDIR)/$(LIBDIR)
-	cd $(DESTDIR)/$(LIBDIR) && ln -sf $(RELEASESO) $(TARGET)
-	cd $(DESTDIR)/$(LIBDIR) && ln -sf $(RELEASESO) $(LIBSO)
+	test -d $(LIBDIR) || install -m 755 -d $(LIBDIR)
+	install -m 644 $(RELEASESO) $(LIBDIR)
+	cd $(LIBDIR) && ln -sf $(RELEASESO) $(TARGET)
+	cd $(LIBDIR) && ln -sf $(RELEASESO) $(LIBSO)
 
 clean:
 	-rm -f $(OBJS) $(RELEASESO) $(LIBSO) $(TARGET)
