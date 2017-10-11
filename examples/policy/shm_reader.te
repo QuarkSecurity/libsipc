@@ -21,7 +21,7 @@ libs_use_ld_so(shm_reader_t)
 libs_use_shared_libs(shm_reader_t)
 
 # we are making the assumption you run this from your home directory
-userdom_read_unpriv_users_home_content_files(shm_reader_t)
+userdom_home_reader(shm_reader_t)
 
 # shm_reader can read messages from mq_creators queue
 shm_creator_recv_msgs(shm_reader_t)

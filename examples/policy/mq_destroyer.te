@@ -21,7 +21,7 @@ libs_use_ld_so(mq_destroyer_t)
 libs_use_shared_libs(mq_destroyer_t)
 
 # we are making the assumption you run this from your home directory
-userdom_read_unpriv_users_home_content_files(mq_destroyer_t)
+userdom_home_reader(mq_destroyer_t)
 
 # mq_destroyer destroys mq_creators queue
 mq_creator_destroy_mq(mq_destroyer_t)

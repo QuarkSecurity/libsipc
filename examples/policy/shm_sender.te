@@ -24,7 +24,7 @@ libs_use_ld_so(shm_sender_t)
 libs_use_shared_libs(shm_sender_t)
 
 # we are making the assumption you run this from your home directory
-userdom_read_unpriv_users_home_content_files(shm_sender_t)
+userdom_home_reader(shm_sender_t)
 
 shm_creator_send_msgs(shm_sender_t)
 

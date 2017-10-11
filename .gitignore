@@ -1,0 +1,14 @@
+*.pp
+*.o
+*.so
+*.so.*
+tmp
+mq_creator
+mq_destroyer
+mq_sender
+mq_reader
+shm_creator
+shm_destroyer
+shm_sender
+shm_reader
+test_ipc
